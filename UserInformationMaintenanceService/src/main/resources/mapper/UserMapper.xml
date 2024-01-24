@@ -1,0 +1,29 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.hitwh.userinformationmaintenanceservice.mapper.UserMapper">
+
+    <resultMap id="user" type="edu.hitwh.userinformationmaintenanceservice.entity.User">
+        <result property="id" column="u_id"/>
+        <result property="name" column="u_name"/>
+        <result property="username" column="u_username"/>
+        <result property="password" column="u_password"/>
+        <result property="gender" column="u_gender"/>
+        <result property="phone" column="u_phone"/>
+        <result property="email" column="u_email"/>
+        <result property="createTime" column="u_insert"/>
+        <result property="updateTime" column="u_update"/>
+        <result property="deleteStatus" column="u_delete"/>
+        <result property="userType" column="u_type"/>
+    </resultMap>
+
+    <select id="getAllUsers" resultMap="user">
+        SELECT u_id, u_name, u_username, u_gender, u_phone, u_email, u_insert, u_update, u_delete, u_type
+        FROM user
+        WHERE u_delete = 0
+    </select>
+
+    <select id="getUserByUsername" resultMap="user">
+        select * from user where u_username = #{username} and u_delete = 0
+    </select>
+
+</mapper>

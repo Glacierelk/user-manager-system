@@ -1,0 +1,12 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.hitwh.loginservice.mapper.LogMapper">
+
+    <resultMap id="log" type="edu.hitwh.loginservice.entity.Log">
+        <result property="id" column="l_id" />
+        <result property="userId" column="l_user_id" />
+        <result property="description" column="l_description" />
+        <result property="createTime" column="l_create_time" />
+    </resultMap>
+
+</mapper>

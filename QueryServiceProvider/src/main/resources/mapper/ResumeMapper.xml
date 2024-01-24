@@ -1,0 +1,24 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.hitwh.queryserviceprovider.mapper.ResumeMapper">
+
+    <resultMap id="resume" type="edu.hitwh.queryserviceprovider.entity.Resume">
+        <result property="id" column="r_id"/>
+        <result property="userId" column="r_user_id"/>
+        <result property="description" column="r_description"/>
+        <result property="startTime" column="r_start_date"/>
+        <result property="endTime" column="r_end_date"/>
+        <result property="createTime" column="r_insert"/>
+        <result property="updateTime" column="r_update"/>
+        <result property="deleteStatus" column="r_delete"/>
+    </resultMap>
+
+    <select id="getResumesByUserId" resultMap="resume">
+        select * from resume where r_user_id = #{userId} and r_delete = 0
+    </select>
+
+    <select id="getResumesListByUserId" resultMap="resume">
+        SELECT * FROM resume WHERE r_user_id = #{userId} AND r_delete = 0 LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+</mapper>

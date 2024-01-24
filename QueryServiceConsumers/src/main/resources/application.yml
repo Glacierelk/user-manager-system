@@ -1,0 +1,11 @@
+server:
+  port: 8732
+
+spring:
+  application:
+    name: query-service-consumer
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8735/eureka/

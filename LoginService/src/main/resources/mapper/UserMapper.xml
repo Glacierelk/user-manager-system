@@ -1,0 +1,18 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.hitwh.loginservice.mapper.UserMapper">
+
+    <resultMap id="user" type="edu.hitwh.loginservice.entity.User">
+        <result property="id" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="userType" column="user_type"/>
+    </resultMap>
+
+    <select id="getUserByUsername" resultMap="user">
+        SELECT user_id, username, password, user_type
+        FROM user_account_view
+        WHERE username = #{username}
+    </select>
+
+</mapper>

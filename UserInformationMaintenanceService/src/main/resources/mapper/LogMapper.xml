@@ -1,0 +1,55 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.hitwh.userinformationmaintenanceservice.mapper.LogMapper">
+
+    <resultMap id="log" type="edu.hitwh.userinformationmaintenanceservice.entity.Log">
+        <result property="id" column="l_id" />
+        <result property="userId" column="l_user_id" />
+        <result property="description" column="l_description" />
+        <result property="createTime" column="l_create_time" />
+    </resultMap>
+
+    <select id="queryLogs" resultMap="log">
+        SELECT l_id, l_user_id, l_description, l_create_time
+        FROM log
+        <where>
+            l_id = l_id
+            <if test="st != null and st != ''">
+                AND l_create_time >= #{st}
+            </if>
+            <if test="et != null and et != ''">
+                AND #{et} >= l_create_time
+            </if>
+        </where>
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <select id="queryLogsCount" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM log
+        <where>
+            l_id = l_id
+            <if test="st != null and st != ''">
+                AND l_create_time >= #{st}
+            </if>
+            <if test="et != null and et != ''">
+                AND #{et} >= l_create_time
+            </if>
+        </where>
+    </select>
+
+    <select id="queryAllLogs" resultMap="log">
+        SELECT l_id, l_user_id, l_description, l_create_time
+        FROM log
+        <where>
+            l_id = l_id
+            <if test="st != null and st != ''">
+                AND l_create_time >= #{st}
+            </if>
+            <if test="et != null and et != ''">
+                AND #{et} >= l_create_time
+            </if>
+        </where>
+    </select>
+
+</mapper>

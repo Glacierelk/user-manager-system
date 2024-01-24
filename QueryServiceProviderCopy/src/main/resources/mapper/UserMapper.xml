@@ -1,0 +1,60 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.hitwh.queryserviceprovider.mapper.UserMapper">
+
+    <resultMap id="user" type="edu.hitwh.queryserviceprovider.entity.User">
+        <result property="id" column="u_id"/>
+        <result property="name" column="u_name"/>
+        <result property="username" column="u_username"/>
+        <result property="password" column="u_password"/>
+        <result property="gender" column="u_gender"/>
+        <result property="phone" column="u_phone"/>
+        <result property="email" column="u_email"/>
+        <result property="createTime" column="u_insert"/>
+        <result property="updateTime" column="u_update"/>
+        <result property="deleteStatus" column="u_delete"/>
+        <result property="userType" column="u_type"/>
+    </resultMap>
+
+    <select id="getUserInfoById" resultMap="user">
+        SELECT u_id, u_name, u_username, u_gender, u_phone, u_email, u_insert, u_update, u_delete, u_type
+        FROM user
+        WHERE u_id = #{id} AND u_delete = 0
+    </select>
+
+    <select id="getUserList" resultMap="user">
+        SELECT u_id, u_name, u_username, u_gender, u_phone, u_email, u_insert, u_update, u_delete, u_type
+        FROM user
+        <where>
+            u_delete = 0
+            <if test="name != null and name != ''">
+                AND u_name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="username != null and username != ''">
+                AND u_username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="phone != null and phone != ''">
+                AND u_phone = #{phone}
+            </if>
+        </where>
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <select id="getUserCount" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM user
+        <where>
+            u_delete = 0
+            <if test="name != null and name != ''">
+                AND u_name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="username != null and username != ''">
+                AND u_username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="phone != null and phone != ''">
+                AND u_phone = #{phone}
+            </if>
+        </where>
+    </select>
+
+</mapper>
