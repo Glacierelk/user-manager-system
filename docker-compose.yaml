@@ -1,0 +1,167 @@
+networks:
+  ums-network:
+    driver: bridge
+
+services:
+  ums-mysql:
+    image: mysql:8.0
+    container_name: ums-mysql
+    environment:
+      - 'MYSQL_DATABASE=service_enabling'
+      - 'MYSQL_PASSWORD=se8192'
+      - 'MYSQL_ROOT_PASSWORD=root'
+      - 'MYSQL_USER=service_enabling_user'
+    ports:
+      - "33306:3306"
+    volumes:
+      - './database/mysql-data:/var/lib/mysql'
+      - './database/service_enabling.sql:/docker-entrypoint-initdb.d/init.sql'
+    networks:
+      - ums-network
+
+  ums-eureka-1:
+    image: ums-eureka-1:latest
+    container_name: ums-eureka-1
+    ports:
+      - "8729:8729"
+    networks:
+      - ums-network
+
+  ums-eureka-2:
+    image: ums-eureka-2:latest
+    container_name: ums-eureka-2
+    ports:
+      - "8735:8735"
+    networks:
+      - ums-network
+
+  ums-login:
+    image: ums-login:latest
+    container_name: ums-login
+    ports:
+      - '8733:8733'
+    depends_on:
+      - ums-eureka-1
+      - ums-eureka-2
+      - ums-mysql
+    environment:
+      - 'SPRING_DATASOURCE_URL=jdbc:mysql://ums-mysql:3306/service_enabling?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true'
+      - 'SPRING_DATASOURCE_USERNAME=service_enabling_user'
+      - 'SPRING_DATASOURCE_PASSWORD=se8192'
+      - 'SPRING_DATASOURCE_DRIVER-CLASS-NAME=com.mysql.cj.jdbc.Driver'
+      - 'SPRING_DATASOURCE_HIKARI_MAXIMUM-POOL-SIZE=5'
+      - 'SPRING_DATASOURCE_HIKARI_MINIMUM-IDLE=1'
+      - 'SPRING_DATASOURCE_HIKARI_IDLE-TIMEOUT=10000'
+      - 'SPRING_DATASOURCE_HIKARI_POOL-NAME=HikariCP'
+      - 'SPRING_DATASOURCE_HIKARI_MAX-LIFETIME=1800000'
+      - 'SPRING_DATASOURCE_HIKARI_CONNECTION-TIMEOUT=30000'
+      - 'SPRING_DATASOURCE_HIKARI_CONNECTION-TEST-QUERY=SELECT 1'
+      - 'SPRING_DATASOURCE_HIKARI_VALIDATION-TIMEOUT=5000'
+    networks:
+      - ums-network
+
+  ums-query-consumer:
+    image: ums-query-consumer:latest
+    container_name: ums-query-consumer
+    ports:
+      - '8732:8732'
+    depends_on:
+      - ums-eureka-1
+      - ums-eureka-2
+      - ums-mysql
+    networks:
+      - ums-network
+
+  ums-query-provider-1:
+    image: ums-query-provider-1:latest
+    container_name: ums-query-provider-1
+    ports:
+      - '8731:8731'
+    depends_on:
+      - ums-eureka-1
+      - ums-eureka-2
+      - ums-mysql
+      - ums-query-consumer
+    environment:
+      - 'SPRING_DATASOURCE_URL=jdbc:mysql://ums-mysql:3306/service_enabling?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true'
+      - 'SPRING_DATASOURCE_USERNAME=service_enabling_user'
+      - 'SPRING_DATASOURCE_PASSWORD=se8192'
+      - 'SPRING_DATASOURCE_DRIVER-CLASS-NAME=com.mysql.cj.jdbc.Driver'
+      - 'SPRING_DATASOURCE_HIKARI_MAXIMUM-POOL-SIZE=5'
+      - 'SPRING_DATASOURCE_HIKARI_MINIMUM-IDLE=1'
+      - 'SPRING_DATASOURCE_HIKARI_IDLE-TIMEOUT=10000'
+      - 'SPRING_DATASOURCE_HIKARI_POOL-NAME=HikariCP'
+      - 'SPRING_DATASOURCE_HIKARI_MAX-LIFETIME=1800000'
+      - 'SPRING_DATASOURCE_HIKARI_CONNECTION-TIMEOUT=30000'
+      - 'SPRING_DATASOURCE_HIKARI_CONNECTION-TEST-QUERY=SELECT 1'
+      - 'SPRING_DATASOURCE_HIKARI_VALIDATION-TIMEOUT=5000'
+    networks:
+      - ums-network
+
+  ums-query-provider-2:
+    image: ums-query-provider-2:latest
+    container_name: ums-query-provider-2
+    ports:
+      - '8734:8734'
+    depends_on:
+      - ums-eureka-1
+      - ums-eureka-2
+      - ums-mysql
+      - ums-query-consumer
+    environment:
+      - 'SPRING_DATASOURCE_URL=jdbc:mysql://ums-mysql:3306/service_enabling?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true'
+      - 'SPRING_DATASOURCE_USERNAME=service_enabling_user'
+      - 'SPRING_DATASOURCE_PASSWORD=se8192'
+      - 'SPRING_DATASOURCE_DRIVER-CLASS-NAME=com.mysql.cj.jdbc.Driver'
+      - 'SPRING_DATASOURCE_HIKARI_MAXIMUM-POOL-SIZE=5'
+      - 'SPRING_DATASOURCE_HIKARI_MINIMUM-IDLE=1'
+      - 'SPRING_DATASOURCE_HIKARI_IDLE-TIMEOUT=10000'
+      - 'SPRING_DATASOURCE_HIKARI_POOL-NAME=HikariCP'
+      - 'SPRING_DATASOURCE_HIKARI_MAX-LIFETIME=1800000'
+      - 'SPRING_DATASOURCE_HIKARI_CONNECTION-TIMEOUT=30000'
+      - 'SPRING_DATASOURCE_HIKARI_CONNECTION-TEST-QUERY=SELECT 1'
+      - 'SPRING_DATASOURCE_HIKARI_VALIDATION-TIMEOUT=5000'
+    networks:
+      - ums-network
+
+  ums-userinfo:
+    image: ums-userinfo:latest
+    container_name: ums-userinfo
+    ports:
+      - '8730:8730'
+    depends_on:
+      - ums-eureka-1
+      - ums-eureka-2
+      - ums-mysql
+    environment:
+      - 'SPRING_DATASOURCE_URL=jdbc:mysql://ums-mysql:3306/service_enabling?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true'
+      - 'SPRING_DATASOURCE_USERNAME=service_enabling_user'
+      - 'SPRING_DATASOURCE_PASSWORD=se8192'
+      - 'SPRING_DATASOURCE_DRIVER-CLASS-NAME=com.mysql.cj.jdbc.Driver'
+      - 'SPRING_DATASOURCE_HIKARI_MAXIMUM-POOL-SIZE=5'
+      - 'SPRING_DATASOURCE_HIKARI_MINIMUM-IDLE=1'
+      - 'SPRING_DATASOURCE_HIKARI_IDLE-TIMEOUT=10000'
+      - 'SPRING_DATASOURCE_HIKARI_POOL-NAME=HikariCP'
+      - 'SPRING_DATASOURCE_HIKARI_MAX-LIFETIME=1800000'
+      - 'SPRING_DATASOURCE_HIKARI_CONNECTION-TIMEOUT=30000'
+      - 'SPRING_DATASOURCE_HIKARI_CONNECTION-TEST-QUERY=SELECT 1'
+      - 'SPRING_DATASOURCE_HIKARI_VALIDATION-TIMEOUT=5000'
+    networks:
+      - ums-network
+
+#  ums-frontend:
+#    image: ums-frontend:latest
+#    container_name: ums-frontend
+#    ports:
+#      - "12345:80"
+#    depends_on:
+#      - ums-eureka-1
+#      - ums-eureka-2
+#      - ums-login
+#      - ums-query-consumer
+#      - ums-query-provider-1
+#      - ums-query-provider-2
+#      - ums-userinfo
+#      - ums-mysql
+#    networks:
+#      - ums-network

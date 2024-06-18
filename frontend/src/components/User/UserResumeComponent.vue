@@ -318,7 +318,7 @@ const handleCurrentChange = (val) => {
 };
 
 const search = () => {
-  myAxios.get(`http://localhost:8731/user/resume/list/${localStorage.getItem("User-Id")}/${pageSize.value}/${currentPage.value}`).then(
+  myAxios.get(`http://localhost:8734/user/resume/list/${localStorage.getItem("User-Id")}/${pageSize.value}/${currentPage.value}`).then(
       res => {
         console.log(res);
         tableData.value = res.data.list;
